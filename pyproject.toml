@@ -4,4 +4,7 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "mistralai>=1.12.4",
+    "mne>=1.11.0",
+]
