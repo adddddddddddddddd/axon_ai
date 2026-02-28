@@ -4,10 +4,16 @@ import numpy as np
 import os
 
 if __name__ == "__main__":
-    sample_data_folder = mne.datasets.sample.data_path()
-    sample_data_raw_file = os.path.join(
-        sample_data_folder, "MEG", "sample", "sample_audvis_raw.fif"
-    )
-    raw = mne.io.read_raw_fif(sample_data_raw_file)
-    raw.crop(0, 60).load_data()  # just use a fraction of data for speed here
-    raw.plot(n_channels=30, scalings="auto", show_scrollbars=False, title="Raw data", block=True)
+
+    root = mne.datasets.sample.data_path() / "MEG" / "sample"
+    raw_file = root / "sample_audvis_filt-0-40_raw.fif"
+    raw = mne.io.read_raw_fif(raw_file, preload=False)
+
+    events_file = root / "sample_audvis_filt-0-40_raw-eve.fif"
+    events = mne.read_events(events_file)
+
+    raw.crop(tmax=90)  # in seconds (happens in-place)
+    # discard events >90 seconds (not strictly neces
+    events = events[events[:, 0] <= raw.last_samp]
+    raw.pick(["eeg", "eog"]).load_data()
+    raw.plot(duration=5, n_channels=1, scalings="auto", show_scrollbars=False, block=True)
