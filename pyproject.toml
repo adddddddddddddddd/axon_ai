@@ -15,4 +15,9 @@ dependencies = [
     "scikit-learn>=1.8.0",
     "picard>=2.13.3",
     "python-picard>=0.8.1",
+    "fastapi>=0.135.0",
+    "uvicorn[standard]>=0.41.0",
+    "psycopg[binary]>=3.3.3",
+    "alembic>=1.18.4",
+    "sqlmodel>=0.0.37",
 ]

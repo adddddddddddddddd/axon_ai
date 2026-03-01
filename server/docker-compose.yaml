@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:14.22-alpine3.22
+
+    container_name: pg-container
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secretsecret
+      POSTGRES_DB: eeg_pipeline_db
+    volumes:
+      - eeg_pipeline_dbdata:/var/lib/postgresql/data  # Named volume for persistence
+    ports:
+      - "5432:5432"
+volumes:
+  eeg_pipeline_dbdata: {}

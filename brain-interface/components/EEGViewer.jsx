@@ -90,15 +90,41 @@ export default function EEGViewer({ isProcessing = true }) {
     return () => obs.disconnect()
   }, [])
 
-  useEffect(() => {
-    // Generate signals
-    setSignals(CHANNELS.map((ch, i) => ({
-      label: ch,
-      data: generateSignal(400, 8 + i * 1.5, 0.25 + i * 0.05, i === 0 || i === 1),
-      artifactRange: i === 0 || i === 1,
-    })))
-  }, [])
+  // useEffect(() => {
+  //   // Generate signals
+  //   setSignals(CHANNELS.map((ch, i) => ({
+  //     label: ch,
+  //     data: generateSignal(400, 8 + i * 1.5, 0.25 + i * 0.05, i === 0 || i === 1),
+  //     artifactRange: i === 0 || i === 1,
+  //   })))
+  // }, [])
+  if (loading) {
+    return <div>Loading signals...</div>
+  }
 
+  return (
+    <div ref={containerRef} style={{ /* ...existing styles... */ }}>
+      {/* ...existing header... */}
+
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+        {signals.map((sig) => (
+          <SignalRow
+            key={sig.label}
+            label={sig.label}
+            data={sig.data}
+            artifactRange={sig.artifactRange}
+            width={width}
+            height={46}
+          />
+        ))}
+        
+        {/* ...existing time cursor... */}
+      </div>
+
+      {/* ...existing time axis... */}
+    </div>
+  )
+}
   // Animate time cursor
   useEffect(() => {
     if (!isProcessing) return
@@ -184,7 +210,7 @@ export default function EEGViewer({ isProcessing = true }) {
       </div>
     </div>
   )
-}
+
 
 function LegendItem({ color, label }) {
   return (

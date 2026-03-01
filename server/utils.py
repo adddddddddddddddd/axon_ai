@@ -21,6 +21,24 @@ from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
 
+class WebSocketHandler(logging.Handler):
+    """Custom logging handler that sends logs to a WebSocket"""
+    
+    def __init__(self, websocket=None):
+        super().__init__()
+        self.websocket = websocket
+    
+    def emit(self, record):
+        if self.websocket:
+            try:
+                log_entry = self.format(record)
+                # Send asynchronously if needed
+                import asyncio
+                asyncio.create_task(self.websocket.send_text(log_entry))
+            except Exception:
+                pass  # Don't break logging if WebSocket fails
+
+
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
@@ -54,7 +72,17 @@ Preprocessing: The EEG recordings were exported in .eeg format and are transform
 
 import base64
 
+# Function to attach WebSocket to logger
+def attach_websocket_to_logger(websocket):
+    """Attach a WebSocket to the logger for real-time updates"""
+    ws_handler = WebSocketHandler(websocket)
+    ws_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+    logger.addHandler(ws_handler)
+    return ws_handler
 
+def detach_websocket_handler(ws_handler):
+    """Remove WebSocket handler from logger"""
+    logger.removeHandler(ws_handler)
 def upload_image_to_catbox(image_path: str) -> str:
     """
     Upload an image to Catbox.moe and return the public URL.
