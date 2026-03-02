@@ -31,8 +31,8 @@ client = Mistral(api_key=api_key)
 
 SLOW_DRIFT_THRESHOLD = 0.5  # Threshold for deciding if slow drift correction is needed
 
-# if not os.path.exists("../datasets/ds004504"):
-#     openneuro.download(dataset="ds004504", target_dir="../datasets/ds004504")
+if not os.path.exists("../datasets/ds004504"):
+    openneuro.download(dataset="ds004504", target_dir="../datasets/ds004504")
 
 
 bids_path = BIDSPath(
