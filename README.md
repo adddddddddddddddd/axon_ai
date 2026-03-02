@@ -6,6 +6,8 @@ We are also implementing an ui to make interact with Axon easier. MCP could also
 
 A huge thanks for the work behind mne sdk. This is actually what powers the models capabilities and it is a wonderful package.
 
+# How to use
+
 ## Setup
 ```
 #Clone the repository
@@ -22,8 +24,8 @@ cd main
 uv run main.py
 
 ```
-
-## Change dataset
+## Modifying the input data
+### Change dataset
 
 You can specify which dataset you want to access by changing its import
 
@@ -34,9 +36,27 @@ if not os.path.exists("../datasets/ds004504"):
     openneuro.download(dataset="ds004504", target_dir="../datasets/ds004504")
 ```
 
-## Architecture
+### Change subject
 
-### Pipeline Flow
+You can specify which subject you want to preprocess by changing the subject id in the BIDSPath object
+
+```python
+# axon_ai/main/main.py line 42
+bids_path = BIDSPath(
+    subject="sub-001",
+    session="ses-01",
+    task="rest",
+    datatype="eeg",
+    root="../datasets/ds004504"
+)
+```
+
+## Output
+The preprocessed data will be stored in the `images` folder. You can change this by modifying the `OUTPUT_DIR` variable in `main.py`.
+
+# Architecture
+
+## Pipeline Flow
 
 ```
 Initial QC Agent - Planning Agent
@@ -62,7 +82,7 @@ Interpolation Agent (if Bad Channel Handoff to him)
 Final result
 ```
 
-### Key Features and leveraged features from Magistral
+## Key Features and leveraged features from Magistral
 
 - **Sequential Processing**: Agents execute in a defined order with conditional branches thanks to the Planner
 - **Retry Mechanisms**: The Agent is fed the results of his tool usage again to see whether or not it might be necessary to reapply one of his tools before handoff.
